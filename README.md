@@ -21,8 +21,7 @@ This project fixes that.
 
 ## Architecture
 
-```
-Google Sheets → ADF → ADLS Gen2 → Bronze → Silver → Gold
+![Insuflux (1).jpg]
 ```
 
 | Layer | Tool | Purpose |
