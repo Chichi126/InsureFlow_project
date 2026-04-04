@@ -38,15 +38,15 @@ This project answers that.
 
 ## Dataset
 
-| Table | Rows |
+| Table ||
 |---|---|
-| customers | 1,240 |
-| policies | 1,550 |
-| claims | 1,100 |
-| payments | 1,800 |
-| agents | 50 |
-| coverage | 1,500 |
-| risk_assessment | 1,200 |
+| customers ||
+| policies ||
+| claims ||
+| payments ||
+| agents ||
+| coverage ||
+| risk_assessment ||
 
 Quality issues included: nulls, negative values, duplicates, invalid dates, inconsistent casing, outliers and Windows carriage return characters in column names.
 
