@@ -21,7 +21,7 @@ This project fixes that.
 
 ## Architecture
 
-![Insuflux (1).jpg]
+![](Insuflux (1).jpg)
 ```
 
 | Layer | Tool | Purpose |
