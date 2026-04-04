@@ -5,7 +5,9 @@
 
 ## Overview
 
-InsureFlow Data Platform is an end-to-end data engineering project built for a fictional UK insurance company offering Health, Life, Property, and Auto cover. The goal was simple — take scattered, messy source data and build a reliable, governed platform that business teams can actually trust and use.
+InsureFlow Data Platform is an end-to-end data engineering project built for a fictional UK insurance company offering Health, Life, Property, and Auto cover. 
+
+The goal was simple take scattered, messy source data and build a reliable, governed platform that business teams can actually trust and use.
 
 The entire stack runs on Azure and Databricks, following the Medallion Architecture pattern from raw ingestion through to business-ready analytics.
 
@@ -13,9 +15,9 @@ The entire stack runs on Azure and Databricks, following the Medallion Architect
 
 ## The Problem
 
-InsureFlow had no single view of their customers, no reliable reporting, and analysts were working off spreadsheets. Data lived in silos, had quality issues, and nobody could answer basic questions like — what is our claims ratio this quarter, or which agents are driving the most revenue?
+InsureFlow had no single view of its customers, no reliable reporting, and analysts were working off spreadsheets. Data lived in silos, had quality issues, and nobody could answer basic questions like what our claims ratio is this quarter, or which agents are driving the most revenue?
 
-This project fixes that.
+This project answers that.
 
 ---
 
@@ -54,7 +56,7 @@ Quality issues included: nulls, negative values, duplicates, invalid dates, inco
 
 **Staging** — ADF drops parquet files into dated folders `yyyy/MM/dd`. No transformation, just landing.
 
-**Bronze** — Files ingested into Delta tables as-is. Every run appends. Nothing is ever changed or deleted here. Schema evolution enabled so new columns from source never break the pipeline.
+**Bronze** — Files ingested into Delta tables as-is. Every run appends. Nothing is ever changed or deleted here. Schema evolution is enabled, so new columns from the source never break the pipeline.
 
 **Silver** — Where the real work happens. Duplicates removed, types cast, strings standardised, invalid records filtered, PII masked and SCD Type 2 implemented to track record changes over time. MERGE used for all upserts — no duplicates, no full reloads.
 
@@ -68,7 +70,7 @@ Quality issues included: nulls, negative values, duplicates, invalid dates, inco
 
 **SCD Type 2** — Tracks how customer records change over time. When a key field changes, the old record is expired with an end date and a new version is inserted. Full history is preserved while current records are always queryable with `WHERE is_current = true`.
 
-**PII Masking** applied at silver — NI numbers, bank accounts, dates of birth, emails and phone numbers are all partially obscured before any business user access.
+**PII Masking** applied at silver  NI numbers, bank accounts, dates of birth, emails and phone numbers are all partially obscured before any business user access.
 
 **Schema Evolution** — handled per table using `.option("mergeSchema", "true")` on writes rather than a global config. Intentional and controlled.
 
@@ -90,7 +92,7 @@ Quality issues included: nulls, negative values, duplicates, invalid dates, inco
 ## Cost Awareness
 
 - Parquet in staging cuts file size significantly versus CSV
-- Incremental loading keeps compute proportional to new data not total data
+- Incremental loading keeps computation proportional to new data not total data
 - Job clusters used for production runs — much cheaper than keeping interactive clusters alive
 - Dated folder partitioning in ADLS enables lifecycle policies to archive old staging files automatically
 - Gold aggregations are lightweight rebuilds — overwrite is fast and avoids stale data accumulating
