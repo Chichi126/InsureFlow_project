@@ -14,28 +14,22 @@ Built on Azure + Databricks using a Medallion Architecture, the platform handles
 ---
 
 ## The Problem
+Before this platform:
 
- Before this platform:
----
-
-No single source of truth
-
-Data scattered across systems
-
-Heavy reliance on spreadsheets
-
-Inconsistent reporting
+- No single source of truth  
+- Data scattered across systems  
+- Heavy reliance on spreadsheets  
+- Inconsistent reporting  
 
 Simple business questions were hard to answer:
 
-What is our claims ratio this quarter?
-
-Which agents are driving the most revenue?
+- What is our **claims ratio this quarter**?  
 
 This project answers that.
+
 ---
 
-## Architecture
+## 🏗️  Architecture
 
 ![](Insuflux-Page.jpg)
 
@@ -47,7 +41,10 @@ This project answers that.
 | Silver | Delta Lake | Cleaned, masked, SCD Type 2 |
 | Gold | Delta Lake | Star schema and KPI tables |
 
-*Built on Azure Data Factory · Databricks · Delta Lake · Unity Catalog · PySpark*
+**Tech Stack:** 
+
+`Azure Data Factory · Databricks · Delta Lake · Unity Catalog · PySpark · ADLS Gen2`
+
 ---
 
 ## Dataset
@@ -62,56 +59,106 @@ This project answers that.
 | coverage ||
 | risk_assessment ||
 
-Quality issues included: nulls, negative values, duplicates, invalid dates, inconsistent casing, outliers and Windows carriage return characters in column names.
+
+### ⚠️ Data Quality Challenges
+
+- Missing values  
+- Duplicates  
+- Invalid dates  
+- Negative values  
+- Inconsistent casing  
+- Hidden characters (`\r`)  
+- Mixed data types  
 
 ---
 
-## What Each Layer Does
-
-**Staging** — Data Flow 🟡 
-ADF ingests data into ADLS (yyyy/MM/dd)
-
-No transformations — raw landing only
-
-### (Medallion Architecture) 
-
-🟤 **Bronze** —  (Delta Lake)
-Append-only ingestion
-
-Full audit trail preserved
-
-No updates or deletes
-
-✅ Idempotent Design
-
-Re-running ingestion does not duplicate or corrupt data
-
-✅ Schema Evolution
-
-New columns from source are automatically handled
-
-Prevents pipeline failures from schema drift
 
 
+## 🔄 Data Flow (Medallion Architecture)
 
-**Silver** — Where the real work happens. Duplicates removed, types cast, strings standardised, invalid records filtered, PII masked and SCD Type 2 implemented to track record changes over time. MERGE used for all upserts — no duplicates, no full reloads.
+### What Each Layer Does
 
-**Gold** — Two outputs. A star schema for BI connectivity and pre-aggregated KPI tables for fast dashboard queries.
+### 🟡 Staging Layer
+- ADF ingests data into ADLS (`yyyy/MM/dd`)
+- No transformations — raw landing only
 
 ---
 
-## Key Technical Implementations
+### 🟤 Bronze Layer (Delta Lake)
 
-**Incremental Loading** — Bronze only picks up today's files. Silver filters by ingestion date and merges only new records. Gold rebuilds aggregations fresh each run.
+- Append-only ingestion  
+- Full audit trail preserved  
+- No updates or deletes  
 
-**SCD Type 2** — Tracks how customer records change over time. When a key field changes, the old record is expired with an end date and a new version is inserted. Full history is preserved while current records are always queryable with `WHERE is_current = true`.
+✅ **Idempotent Design**
+- Re-running ingestion does not duplicate or corrupt data  
 
-**PII Masking** applied at silver  NI numbers, bank accounts, dates of birth, emails and phone numbers are all partially obscured before any business user access.
+✅ **Schema Evolution**
+- New columns from source are automatically handled  
+- Prevents pipeline failures from schema drift  
 
-**Schema Evolution** — handled per table using `.option("mergeSchema", "true")` on writes rather than a global config. Intentional and controlled.
+---
 
-**Star Schema** in Gold — `fact_claims` sits at the centre joined to `dim_customers`, `dim_agents`, `dim_policies` and `dim_date`. Dimensions contain no PII and no technical SCD columns — clean and reporting ready.
+### ⚪ Silver Layer (Transformation Layer)
 
+This is where the heavy lifting happens:
+
+- Data cleaning (trim, casing, formatting)  
+- Type casting with dirty data handling  
+- Duplicate removal  
+- Invalid record filtering  
+- PII masking  
+
+### 🔁 SCD Type 2 with Delta Lake
+
+- Historical tracking of changes  
+- `is_current` flag for latest records  
+- `effective_start_date` / `effective_end_date`  
+
+### ⚡ Delta MERGE for Upserts
+
+- No full reloads  
+- No duplicate records  
+- Fully **idempotent transformations**
+
+---
+
+### 🟡 Gold Layer (Analytics Ready)
+
+Two outputs:
+
+#### ⭐ Star Schema
+- `fact_claims`  
+- `dim_customers`  
+- `dim_agents`  
+- `dim_policies`  
+- `dim_date`  
+
+#### 📈 KPI Tables
+- Pre-aggregated metrics for dashboards  
+
+✅ Clean  
+✅ No PII  
+✅ BI-ready  
+
+
+---
+
+## 🔧 Key Engineering Features
+
+### 🔹 Incremental Processing
+- Bronze → loads only new files  
+- Silver → filters by ingestion date  
+- Gold → rebuilds lightweight aggregations  
+
+---
+
+### 🔹 Schema Evolution (Controlled)
+
+Handled explicitly using:
+
+```python
+.option("mergeSchema", "true")
 ---
 
 ## Best Practices
