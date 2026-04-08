@@ -24,7 +24,7 @@ This project answers that.
 ## Architecture
 
 ![](Insuflux-Page.jpg)
-```
+
 
 | Layer | Tool | Purpose |
 |---|---|---|
@@ -112,13 +112,12 @@ Four business KPIs now served reliably:
 
 ## Project Structure
 
-```
+
 InsureFlow/
 ├── 01_bronze/
 ├── 02_silver/         ← one notebook per table
 ├── 03_gold/
 ├── 04_orchestration/
 └── README.md
-```
 
----
+
