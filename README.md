@@ -158,6 +158,7 @@ Handled explicitly using:
 
 ```python
 .option("mergeSchema", "true")
+```
 ---
 
 ## Best Practices
