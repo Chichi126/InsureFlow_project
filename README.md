@@ -27,7 +27,6 @@ Simple business questions were hard to answer:
 
 This project answers that.
 
----
 
 ## 🏗️  Architecture
 
