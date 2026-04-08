@@ -23,7 +23,7 @@ This project answers that.
 
 ## Architecture
 
-![](Insuflux.jpg)
+![](Insuflux-Page.jpg)
 ```
 
 | Layer | Tool | Purpose |
