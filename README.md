@@ -93,7 +93,7 @@ This project answers that.
 - Re-running ingestion does not duplicate or corrupt data  
 
 ✅ **Schema Evolution**
-- New columns from source are automatically handled  
+- New columns from source are automatically handled  in the Bronze layer
 - Prevents pipeline failures from schema drift  
 
 ---
